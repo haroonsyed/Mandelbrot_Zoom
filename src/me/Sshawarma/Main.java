@@ -1,13 +1,9 @@
 package me.Sshawarma;
 
-import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.UUID;
 
 public class Main {
@@ -18,18 +14,26 @@ public class Main {
         Path path = Paths.get("./output/" + UUID.randomUUID().toString());
         Files.createDirectories(path);
 
-
+        final int width = 1920;
+        final int height = 1080;
+        int threadCount = 4;
 
         //Make frames and run them
-        MandelbrotGen thread = new MandelbrotGen(0,path);
-        MandelbrotGen thread1 = new MandelbrotGen(1,path);
-        MandelbrotGen thread2 = new MandelbrotGen(2,path);
-        MandelbrotGen thread3 = new MandelbrotGen(3,path);
+        for(int threadNumber=0; threadNumber<threadCount; threadNumber++) {
 
-        thread.start();
-        thread1.start();
-        thread2.start();
-        thread3.start();
+            Boundary frameBound = new Boundary(
+                threadNumber*width/threadCount,
+                    (threadNumber+1)*(width)/threadCount,
+                threadNumber*height/threadCount,
+                    (threadNumber+1)*height/threadCount
+            );
+
+            frameBound.print();
+
+//            MandelbrotGen thread = new MandelbrotGen(frameBound,path);
+//            thread.start();
+        }
+
 
     }
 
