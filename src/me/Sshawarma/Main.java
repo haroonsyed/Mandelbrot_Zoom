@@ -8,15 +8,12 @@ import java.util.UUID;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        //Make dir for animation
-        Path path = Paths.get("./output/" + UUID.randomUUID().toString());
-        Files.createDirectories(path);
-
-        final int width = 1920;
-        final int height = 1080;
-        int threadCount = 4;
+        Config config = Config.getConfig();
+        int width = config.width;
+        int height = config.height;
+        int threadCount = config.threadCount;
 
         //Make frames and run them
         for(int threadNumber=0; threadNumber<threadCount; threadNumber++) {
@@ -33,12 +30,6 @@ public class Main {
 //            MandelbrotGen thread = new MandelbrotGen(frameBound,path);
 //            thread.start();
         }
-
-
     }
-
-
-
-
 
 }
