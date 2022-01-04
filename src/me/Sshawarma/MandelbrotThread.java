@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MandelbrotGen extends Thread{
+public class MandelbrotThread extends Thread{
 
     Config config = Config.getConfig();
     final int height = config.height;
@@ -16,15 +16,12 @@ public class MandelbrotGen extends Thread{
     final double centerX = config.centerX;
     final double centerY = config.centerY;
     final Color targets[] = config.targets;
-    final private Path path = config.path;
     private BufferedImage img;
     private Boundary bound;
 
-    public MandelbrotGen(Boundary bound) {
+    public MandelbrotThread(Boundary bound, BufferedImage buffer) {
         this.bound = bound;
-        img = new BufferedImage(bound.x2-bound.x1,
-                                bound.y2-bound.y1,
-                                BufferedImage.TYPE_INT_RGB);
+        this.img = buffer;
     }
 
     //returns pixel based on gradient depending on how close to target color it is
@@ -38,8 +35,7 @@ public class MandelbrotGen extends Thread{
 
     @Override
     public void run() {
-
-        double range = 0.0001;
+        double range = 4*Math.exp(-bound.frameNumber*0.1);
 
         //DO NOT CHANGE, scales x to stop stretching
         double rangeX = range*height/width;
@@ -61,7 +57,7 @@ public class MandelbrotGen extends Thread{
                 // iteration loop of determining if the number converges
                 // Test each point in space and determine convergence
                 int n = 0;
-                int iterLimit = 150;
+                int iterLimit = 100+(bound.frameNumber);
                 int escapeValue = 2;
                 for(n=0;n<iterLimit; n++) {
                     // Determine iterated x and y axis value.
@@ -110,17 +106,6 @@ public class MandelbrotGen extends Thread{
 //                System.out.println(blue);
 
             }
-        }
-
-        //Here we write to png
-        try {
-            Date d = new Date();
-            SimpleDateFormat df = new SimpleDateFormat("HH_mm_ss");
-            String dateText = df.format(d);
-            File outputFile = new File(path.toString() + "/Mandelbrot_" + "8" + ".png");
-            ImageIO.write(img, "png", outputFile);
-        } catch(Exception e) {
-            System.out.println(e);
         }
     }
 }
